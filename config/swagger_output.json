@@ -64,12 +64,6 @@
       }
     },
 
-
-
-
-
-
-
     "/api/v1/auth/onboarding": {
       "post": {
         "tags": [
