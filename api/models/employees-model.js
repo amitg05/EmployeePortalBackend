@@ -29,7 +29,8 @@ const EmployeeSchema = new mongoose.Schema({
     },
     passwordChangedAt: {
         type: Date,
-        default: null
+        default: null,
+      
     },
     contactNumber: {
         type: Number,
@@ -42,11 +43,11 @@ const EmployeeSchema = new mongoose.Schema({
     },
     dob: {
         type: Date,
-        required: true['Date Of Birth Is Required']
+        // required: true['Date Of Birth Is Required']
     },
     doj: {
         type: Date,
-        required: true['Date Of Joining Is Required']
+        // required: true['Date Of Joining Is Required']
     },
     employeeCode: {
         type: String,
@@ -72,17 +73,17 @@ const EmployeeSchema = new mongoose.Schema({
     },
     currentCity: {
         type: String,
-        default: 'Indore',
+        // default: 'Indore',
         trim: true
     },
     postalCode: {
         type: Number,
-        default: 452010,
+        // default: 452010,
         trim: true
     },
     employeeRole: {
         type: String,
-        default: 'Admin'
+        // default: 'Admin'
     },
     avatar: {
         type: String,
@@ -109,7 +110,7 @@ const EmployeeSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        default: 'Male'
+        // default: 'Male'
     }
 
 })

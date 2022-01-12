@@ -11,7 +11,10 @@ const AppError = require('../../utils/appError');
 module.exports = {
 
     signup: catchAsync(async (req, res, next) => {
+        
         await Employee.create(req.body);
+
+        
         res.status(201).json({
             status: 'success',
             message: `Employee Got Registered Successfully With Password Sent To ${req.body.email} Email Id,`
