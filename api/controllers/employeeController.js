@@ -89,7 +89,7 @@ module.exports = {
     /* GET New DOJ Employees API */
     getNewDOJEmployees: catchAsync(async (req, res, next) => {
         let fromDate = new Date(Date.now() + 60 * 60 * 24 * 30 * 1000);
-        var currentDate = new Date(Date.now() - (24*60*60*1000) * 1);
+        var currentDate = new Date(Date.now() - (24 * 60 * 60 * 1000) * 1);
 
         const result = await Employee.find({
 
@@ -100,7 +100,7 @@ module.exports = {
             isDeleted: 1
 
         }, { _id: 1, firstName: 1, lastName: 1, employeeCode: 1, currentCity: 1, employeeDesignation: 1, contactNumber: 1, avatar: 1 });
-          
+
         res.status(200).json({
             status: 'Success',
             count: result.length,
@@ -131,20 +131,6 @@ module.exports = {
             status: 'Success',
             count,
             employeeData: result
-        })
-    }),
-
-    getAllemployeeLeaves: catchAsync(async (req, res, next) => {
-        let page = req.query.currentpage ? req.query.currentpage : 1;
-        const limitPerPage = 10;
-        let offset = (parseInt(page) - 1) * limitPerPage;
-
-        const result = await Leaves.find().limit(limitPerPage).skip(offset)
-        let count = await Leaves.count({ isDeleted: 1 });
-        res.status(200).json({
-            status: 'Success',
-            count,
-            leavesData: result
         })
     }),
 
@@ -248,7 +234,6 @@ module.exports = {
         let employeeId = req.employee.id
         req.body['employeeId'] = employeeId;
         let body = req.body;
-        console.log(body, 'body')
 
         await Leaves.create(body);
         res.status(201).json({
@@ -260,59 +245,75 @@ module.exports = {
 
     // POST - onboarding action 
     onboarding: catchAsync(async (req, res, next) => {
-        let body = (req.body)
-        await function ()
-         {
-            Onboarding.create(body);
-        } 
-        
-        var full_name = body.first_name +" "+ body.last_name
 
-        var num = (Math.floor(Math.random()*90000) + 10000);
-        var empcode = (Math.floor(Math.random()*900) + 100);
-        var Password =  body.first_name+num ;
-        
-        sendMail(full_name , body.email, Password, empcode, (status) => {
-            if (status) {
-                console.log("Bravo email send succesfully ")                
-               
-                var newusr  = {
-                    firstName:body.first_name,
-                    lastName:body.last_name,
-                    email:body.email,
+
+        let body = (req.body)
+        await function () {
+            Onboarding.create(body);
+        }
+
+        console.log("Hit hua ")
+        var full_name = body.first_name + " " + body.last_name
+
+        var num = (Math.floor(Math.random() * 90000) + 10000);
+        var empcode = (Math.floor(Math.random() * 900) + 100);
+        var Password = body.first_name + num;
+
+        sendMail(full_name, body.email, Password, empcode, (status) => {
+            console.log(status)
+            if (status == true) {
+                console.log("Bravo email send succesfully ")
+
+
+
+                var newusr = {
+
+                    firstName: body.first_name,
+                    lastName: body.last_name,
+                    email: body.email,
                     passwordChangedAt: new Date(),
-                    contactNumber:body.phone,
+                    contactNumber: body.phone,
                     // education:"B.E(Information Science)",
                     // dob:"1989-01-05T07:01:32.138+00:00",
-                    // doj:"2020-11-02T07:01:32.138+00:00",
-                    employeeCode:empcode,
-                //     employeeDesignation:"MEAN Stack Developer",
-                //     previousCompanyName:"Navient Technologies Pvt Ltd",
-                //     permanentAddress:"Subash Nagar Dandeli",
-                //     currentAddress:"Maa Shardha Nagar",
-                //     currentCity:"Indore",
-                //     postalCode:452010,
-                //     employeeRole:"Admin",
-                //     avatar:"/uploads/avatar-uploads/d19998b54b25c37b0b5ccf419064604e.jpg",
-                //     isActive:1,
-                //     isDeleted:1,
-                //     adharCardAttachment:Array,
-                //     panCardAttachment:Array,
-                //     otherAttachment:Array,
-                //     createdAt:"2021-09-24T11:59:00.899+00:00",
-                //     refreshToken:" "
-                    
+                    doj: new Date(),
+                    employeeCode: empcode,
+                    //     employeeDesignation:"MEAN Stack Developer",
+                    //     previousCompanyName:"Navient Technologies Pvt Ltd",
+                    //     permanentAddress:"Subash Nagar Dandeli",
+                    //     currentAddress:"Maa Shardha Nagar",
+                    //     currentCity:"Indore",
+                    //     postalCode:452010,
+                    //     employeeRole:"Admin",
+                    //     avatar:"/uploads/avatar-uploads/d19998b54b25c37b0b5ccf419064604e.jpg",
+                    //     isActive:1,
+                    //     isDeleted:1,
+                    //     adharCardAttachment:Array,
+                    //     panCardAttachment:Array,
+                    //     otherAttachment:Array,
+                    //     createdAt:"2021-09-24T11:59:00.899+00:00",
+                    //     refreshToken:" "
+
                 }
                 newusr.password = Password
 
-                Employee.create(newusr) ;
+                Employee.create(newusr);
+                console.log("Record inserted ")
+                res.status(201).json({
+                    status: 'Success',
+                    message: 'Register Successfully'
+                })
+            }
+
+            else {
+                res.status(400).json({
+                    status: 'Failed',
+                    message: 'Register Failed Invalid Email id'
+                })
+
             }
         })
 
-        res.status(201).json({
-            status: 'Success',
-            message: 'Register Successfully'
-        })
+
     }),
 
 
