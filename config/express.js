@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: 'ENV_FILENAME' });
 const express = require('express');
 const routes = require('./routes/index-routes');
 const chalk = require('chalk');
