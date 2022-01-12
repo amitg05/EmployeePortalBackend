@@ -5,6 +5,14 @@ const util = require("util");
 const Employee = require('../models/employees-model');
 const Leaves = require('../models/leaves-model');
 
+
+const Onboarding = require('../models/onboarding')
+const sendMail = require('../../utils/email_verification')
+const New_Employee = require("../models/New_employee");
+
+
+
+
 module.exports = {
     /* File Upload APi */
     fileUpload: catchAsync(async (req, res, next) => {
@@ -124,6 +132,20 @@ module.exports = {
         })
     }),
 
+    getAllemployeeLeaves: catchAsync(async (req, res, next) => {
+        let page = req.query.currentpage ? req.query.currentpage : 1;
+        const limitPerPage = 10;
+        let offset = (parseInt(page) - 1) * limitPerPage;
+
+        const result = await Leaves.find().limit(limitPerPage).skip(offset)
+        let count = await Leaves.count({ isDeleted: 1 });
+        res.status(200).json({
+            status: 'Success',
+            count,
+            leavesData: result
+        })
+    }),
+
 
     /* DELETE An Employee API */
     deleteEmployee: catchAsync(async (req, res, next) => {
@@ -218,11 +240,13 @@ module.exports = {
         })
     }),
 
+
     /* POST - Add Leave Application */
     employeeLeaves: catchAsync(async (req, res, next) => {
         let employeeId = req.employee.id
         req.body['employeeId'] = employeeId;
         let body = req.body;
+        console.log(body, 'body')
 
         await Leaves.create(body);
         res.status(201).json({
@@ -231,6 +255,67 @@ module.exports = {
         })
     }),
 
+
+    // POST - onboarding action 
+    onboarding: catchAsync(async (req, res, next) => {
+        let body = (req.body)
+        await function ()
+         {
+            Onboarding.create(body);
+        } 
+        
+        var full_name = body.first_name +" "+ body.last_name
+
+        var num = (Math.floor(Math.random()*90000) + 10000);
+        var empcode = (Math.floor(Math.random()*900) + 100);
+        var Password =  body.first_name+num ;
+        
+        sendMail(full_name , body.email, Password, empcode, (status) => {
+            if (status) {
+                console.log("Bravo email send succesfully ")
+
+                
+               
+                var newusr  = {
+
+                    firstName:body.first_name,
+                    lastName:body.last_name,
+                    email:body.email,
+                    passwordChangedAt: new Date(),
+                    contactNumber:body.phone,
+                    // education:"B.E(Information Science)",
+                    // dob:"1989-01-05T07:01:32.138+00:00",
+                    // doj:"2020-11-02T07:01:32.138+00:00",
+                    employeeCode:empcode,
+                //     employeeDesignation:"MEAN Stack Developer",
+                //     previousCompanyName:"Navient Technologies Pvt Ltd",
+                //     permanentAddress:"Subash Nagar Dandeli",
+                //     currentAddress:"Maa Shardha Nagar",
+                //     currentCity:"Indore",
+                //     postalCode:452010,
+                //     employeeRole:"Admin",
+                //     avatar:"/uploads/avatar-uploads/d19998b54b25c37b0b5ccf419064604e.jpg",
+                //     isActive:1,
+                //     isDeleted:1,
+                //     adharCardAttachment:Array,
+                //     panCardAttachment:Array,
+                //     otherAttachment:Array,
+                //     createdAt:"2021-09-24T11:59:00.899+00:00",
+                //     refreshToken:" "
+                    
+                }
+                newusr.password = Password
+
+                Employee.create(newusr) ;
+                 console.log("Record inserted ")  
+            }
+        })
+
+        res.status(201).json({
+            status: 'Success',
+            message: 'Register Successfully'
+        })
+    }),
 
 
 }
