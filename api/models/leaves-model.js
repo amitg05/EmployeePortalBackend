@@ -18,10 +18,6 @@ const LeaveSchema = new mongoose.Schema({
     },
     teamEmailId: {
         type: String,
-        required: [true, 'Email Is Required'],
-        unique: false,
-        allownull: false,
-        lowercase: true
     },
     leaveFrom: {
         type: Date,
@@ -38,5 +34,6 @@ const LeaveSchema = new mongoose.Schema({
 });
 
 
-const Leaves = mongoose.model('Leaves', LeaveSchema);
+const Leaves = mongoose.model('Leaves', LeaveSchema)
+
 module.exports = Leaves;
