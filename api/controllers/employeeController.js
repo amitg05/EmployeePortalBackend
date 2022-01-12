@@ -89,16 +89,18 @@ module.exports = {
     /* GET New DOJ Employees API */
     getNewDOJEmployees: catchAsync(async (req, res, next) => {
         let fromDate = new Date(Date.now() + 60 * 60 * 24 * 30 * 1000);
-        var currentDate = new Date(Date.now());
+        var currentDate = new Date(Date.now() - (24*60*60*1000) * 1);
+
         const result = await Employee.find({
+
             doj: {
                 $gte: new Date(currentDate),
-                $lt: new Date(fromDate)
+                $lte: new Date(fromDate)
             },
             isDeleted: 1
 
         }, { _id: 1, firstName: 1, lastName: 1, employeeCode: 1, currentCity: 1, employeeDesignation: 1, contactNumber: 1, avatar: 1 });
-
+          
         res.status(200).json({
             status: 'Success',
             count: result.length,
@@ -272,12 +274,9 @@ module.exports = {
         
         sendMail(full_name , body.email, Password, empcode, (status) => {
             if (status) {
-                console.log("Bravo email send succesfully ")
-
-                
+                console.log("Bravo email send succesfully ")                
                
                 var newusr  = {
-
                     firstName:body.first_name,
                     lastName:body.last_name,
                     email:body.email,
@@ -307,7 +306,6 @@ module.exports = {
                 newusr.password = Password
 
                 Employee.create(newusr) ;
-                 console.log("Record inserted ")  
             }
         })
 
