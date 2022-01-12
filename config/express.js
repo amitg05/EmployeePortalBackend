@@ -1,4 +1,4 @@
-require('dotenv').config({ path: 'ENV_FILENAME' });
+require('dotenv').config();
 const express = require('express');
 const routes = require('./routes/index-routes');
 const chalk = require('chalk');
@@ -15,7 +15,7 @@ const swaggerFile = require('./swagger_output.json')
 
 mongoose.connect(
     process.env.MONGO_URI,
-    { useNewUrlParser: true, useUnifiedTopology: true },
+    { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true },
     () => {
         console.log(chalk.black.bgYellow.bold(`Connected To MongoDB ${process.env.DATABASE}.. `),);
     }
